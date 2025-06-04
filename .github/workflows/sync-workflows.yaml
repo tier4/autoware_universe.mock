@@ -54,6 +54,7 @@ jobs:
 
       - name: Create Pull Request
         if: steps.changes.outputs.has_changes == 'true'
+        id: create-pr
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ steps.generate-token.outputs.token }}
@@ -90,6 +91,9 @@ jobs:
           if [ "${{ steps.changes.outputs.has_changes }}" == "true" ]; then
             echo "✅ **Changes detected and processed**" >> $GITHUB_STEP_SUMMARY
             echo "📝 **Pull request created** for review" >> $GITHUB_STEP_SUMMARY
+            if [ -n "${{ steps.create-pr.outputs.pull-request-url }}" ]; then
+              echo "🔗 **PR Link**: ${{ steps.create-pr.outputs.pull-request-url }}" >> $GITHUB_STEP_SUMMARY
+            fi
           else
             echo "ℹ️ **No changes needed** - workflows are up to date" >> $GITHUB_STEP_SUMMARY
           fi
